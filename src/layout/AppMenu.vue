@@ -4,7 +4,7 @@ import AppMenuItem from './AppMenuItem.vue';
 
 const model = ref([
     {
-        label: 'Home',
+        label: 'Inicio',
         items: [
             {
                 label: 'Dashboard',
@@ -13,6 +13,122 @@ const model = ref([
             }
         ]
     },
+    {
+        label: 'Operaciones',
+        icon: 'pi pi-fw pi-briefcase',
+        items: [
+            {
+                label: 'Stock de Cajas',
+                icon: 'pi pi-fw pi-box',
+                to: '/operaciones/stock',
+                roles: ['Administrador', 'Jefe de Almacén', 'Jefe de Administración']
+            },
+            {
+                label: 'Salida de Cajas',
+                icon: 'pi pi-fw pi-sign-out',
+                to: '/operaciones/guias-salida',
+                roles: ['Administrador', 'Jefe de Almacén']
+            },
+            {
+                label: 'Ingreso de Cajas',
+                icon: 'pi pi-fw pi-sign-in',
+                to: '/operaciones/guias-ingreso',
+                roles: ['Administrador', 'Jefe de Almacén', 'Auxiliar de Almacén']
+            },
+            {
+                label: 'Cajas',
+                icon: 'pi pi-fw pi-inbox',
+                to: '/operaciones/cajas',
+                roles: ['Administrador', 'Jefe de Almacén']
+            },
+            {
+                label: 'Ubicaciones',
+                icon: 'pi pi-fw pi-map-marker',
+                to: '/operaciones/ubicaciones',
+                roles: ['Administrador', 'Jefe de Almacén', 'Auxiliar de Almacén']
+            }
+        ]
+    },
+    {
+        label: 'Clientes',
+        icon: 'pi pi-fw pi-users',
+        items: [
+            {
+                label: 'Clientes',
+                icon: 'pi pi-fw pi-briefcase',
+                to: '/clientes/clientes',
+                roles: ['Administrador', 'Jefe de Almacén']
+            },
+            {
+                label: 'Áreas de Cliente',
+                icon: 'pi pi-fw pi-sitemap',
+                to: '/clientes/areas',
+                roles: ['Administrador', 'Jefe de Almacén']
+            }
+        ]
+    },
+    {
+        label: 'Reportes',
+        icon: 'pi pi-fw pi-chart-line',
+        items: [
+            {
+                label: 'Stock por Cliente',
+                icon: 'pi pi-fw pi-chart-bar',
+                to: '/reportes/stock',
+                roles: ['Administrador', 'Jefe de Almacén', 'Jefe de Administración']
+            },
+            {
+                label: 'Movimientos de Cajas',
+                icon: 'pi pi-fw pi-chart-line',
+                to: '/reportes/movimientos',
+                roles: ['Administrador', 'Jefe de Almacén', 'Jefe de Administración']
+            },
+            {
+                label: 'Ubicación de Cajas',
+                icon: 'pi pi-fw pi-table',
+                to: '/reportes/ubicaciones',
+                roles: ['Administrador', 'Jefe de Almacén']
+            }
+        ]
+    },
+    {
+        label: 'Configuración',
+        icon: 'pi pi-fw pi-cog',
+        items: [
+            {
+                label: 'Usuarios',
+                icon: 'pi pi-fw pi-user',
+                to: '/configuracion/usuarios',
+                roles: ['Administrador']
+            },
+            {
+                label: 'Roles',
+                icon: 'pi pi-fw pi-id-card',
+                to: '/configuracion/roles',
+                roles: ['Administrador']
+            },
+            {
+                label: 'Permisos',
+                icon: 'pi pi-fw pi-key',
+                to: '/configuracion/permisos',
+                roles: ['Administrador']
+            },
+            {
+                label: 'Regionales',
+                icon: 'pi pi-fw pi-map',
+                to: '/configuracion/regionales',
+                roles: ['Administrador']
+            },
+            {
+                label: 'Almacenes',
+                icon: 'pi pi-fw pi-building',
+                to: '/configuracion/almacenes',
+                roles: ['Administrador']
+            }
+        ]
+    },
+
+
     {
         label: 'UI Components',
         path: '/uikit',

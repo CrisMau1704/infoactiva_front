@@ -4,6 +4,13 @@ import { createRouter, createWebHistory } from 'vue-router';
 const router = createRouter({
     history: createWebHistory(),
     routes: [
+         {
+            path: '/auth/login',
+            name: 'login',
+            component: () => import('@/views/auth/Login.vue'),
+            meta: { publica: true },
+        },
+
         {
             path: '/',
             component: AppLayout,
@@ -13,10 +20,22 @@ const router = createRouter({
                     name: 'dashboard',
                     component: () => import('@/views/Dashboard.vue')
                 },
+               {
+                    path: '/clientes/clientes',
+                    name: 'clientes',
+                    component: () => import('@/views/clientes/Clientes.vue'),
+                    meta: { requiresAuth: true, permiso: 'clientes.ver' }
+                },
                 {
-                    path: '/uikit/formlayout',
-                    name: 'formlayout',
-                    component: () => import('@/views/uikit/FormLayout.vue')
+                    path: '/clientes/stock',
+                    name: 'stock',
+                    component: () => import('@/views/clientes/Stock.vue')
+                },
+                {
+                    path: '/configuracion/regionales',
+                    name: 'regionales',
+                    component: () => import('@/views/configuracion/Regionales.vue'),
+                    meta: { requiresAuth: true, permiso: 'regionales.ver' }
                 },
                 {
                     path: '/uikit/input',
@@ -125,21 +144,7 @@ const router = createRouter({
             component: () => import('@/views/pages/NotFound.vue')
         },
 
-        {
-            path: '/auth/login',
-            name: 'login',
-            component: () => import('@/views/pages/auth/Login.vue')
-        },
-        {
-            path: '/auth/access',
-            name: 'accessDenied',
-            component: () => import('@/views/pages/auth/Access.vue')
-        },
-        {
-            path: '/auth/error',
-            name: 'error',
-            component: () => import('@/views/pages/auth/Error.vue')
-        }
+        
     ]
 });
 

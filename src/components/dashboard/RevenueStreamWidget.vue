@@ -11,25 +11,25 @@ function setChartData() {
     const documentStyle = getComputedStyle(document.documentElement);
 
     return {
-        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
         datasets: [
             {
                 type: 'bar',
-                label: 'Subscriptions',
+                label: 'Ingresos',
                 backgroundColor: documentStyle.getPropertyValue('--p-primary-400'),
                 data: [4000, 10000, 15000, 4000],
                 barThickness: 32
             },
             {
                 type: 'bar',
-                label: 'Advertising',
+                label: 'Salidas',
                 backgroundColor: documentStyle.getPropertyValue('--p-primary-300'),
                 data: [2100, 8400, 2400, 7500],
                 barThickness: 32
             },
             {
                 type: 'bar',
-                label: 'Affiliate',
+                label: 'Bajas',
                 backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
                 data: [4100, 5200, 3400, 7400],
                 borderRadius: {
@@ -90,7 +90,7 @@ onMounted(() => {
 
 <template>
     <div class="card">
-        <div class="font-semibold text-xl mb-4">Revenue Stream</div>
+        <div class="font-semibold text-xl mb-4">Movimiento de cajas por mes</div>
         <Chart type="bar" :data="chartData" :options="chartOptions" class="h-80" />
     </div>
 </template>

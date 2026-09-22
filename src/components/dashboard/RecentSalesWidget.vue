@@ -15,15 +15,25 @@ onMounted(() => {
 
 <template>
     <div class="card">
-        <div class="font-semibold text-xl mb-4">Recent Sales</div>
+        <div class="font-semibold text-xl mb-4">Ultimos rangos asignados</div>
         <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
             <Column style="width: 15%" header="Image">
                 <template #body="slotProps">
                     <img :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" :alt="slotProps.data.image" width="50" class="shadow" />
                 </template>
             </Column>
-            <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
-            <Column field="price" header="Price" :sortable="true" style="width: 35%">
+            <Column field="name" header="Cliente" :sortable="true" style="width: 35%"></Column>
+            <Column field="price" header="Desde" :sortable="true" style="width: 25%">
+                <template #body="slotProps">
+                    {{ formatCurrency(slotProps.data.price) }}
+                </template>
+            </Column>
+            <Column field="price" header="Hasta" :sortable="true" style="width: 35%">
+                <template #body="slotProps">
+                    {{ formatCurrency(slotProps.data.price) }}
+                </template>
+            </Column>
+            <Column field="price" header="Total" :sortable="true" style="width: 35%">
                 <template #body="slotProps">
                     {{ formatCurrency(slotProps.data.price) }}
                 </template>
