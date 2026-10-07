@@ -1,42 +1,88 @@
 import AppLayout from '@/layout/AppLayout.vue';
+import { useAuthStore } from '@/stores/auth';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-         {
+        // ========================================
+        // RUTAS PÚBLICAS (sin sesión)
+        // ========================================
+        {
             path: '/auth/login',
             name: 'login',
             component: () => import('@/views/auth/Login.vue'),
-            meta: { publica: true },
+            meta: { publica: true }
+        },
+        {
+            path: '/auth/access',
+            name: 'accessDenied',
+            component: () => import('@/views/auth/Acceso.vue'),
+            meta: { publica: true }
+        },
+        {
+            path: '/landing',
+            name: 'landing',
+            component: () => import('@/views/pages/Landing.vue'),
+            meta: { publica: true }
+        },
+        {
+            path: '/pages/notfound',
+            name: 'notfound',
+            component: () => import('@/views/pages/NotFound.vue'),
+            meta: { publica: true }
         },
 
+        // ========================================
+        // RUTAS PROTEGIDAS (requieren sesión)
+        // ========================================
         {
             path: '/',
             component: AppLayout,
+            meta: { requiresAuth: true },
             children: [
                 {
                     path: '/',
                     name: 'dashboard',
                     component: () => import('@/views/Dashboard.vue')
                 },
-               {
+
+                // --- Clientes ---
+                {
                     path: '/clientes/clientes',
                     name: 'clientes',
                     component: () => import('@/views/clientes/Clientes.vue'),
-                    meta: { requiresAuth: true, permiso: 'clientes.ver' }
+                    meta: { permiso: 'clientes.ver' }
                 },
                 {
                     path: '/clientes/stock',
                     name: 'stock',
                     component: () => import('@/views/clientes/Stock.vue')
+                    // Cuando tengas el permiso: meta: { permiso: 'stock.ver' }
                 },
+
+                // --- Configuración ---
                 {
                     path: '/configuracion/regionales',
                     name: 'regionales',
                     component: () => import('@/views/configuracion/Regionales.vue'),
-                    meta: { requiresAuth: true, permiso: 'regionales.ver' }
+                    meta: { permiso: 'regionales.ver' }
                 },
+
+                {
+                    path: '/configuracion/usuarios',
+                    name: 'usuarios',
+                    component: () => import('@/views/configuracion/Usuario.vue'),
+                    meta: { permiso: 'usuarios.ver' }
+                },
+                {
+                    path: '/configuracion/roles',
+                    name: 'roles',
+                    component: () => import('@/views/configuracion/Roles.vue'),
+                    meta: { permiso: 'roles.ver' }
+                },
+
+                // --- Plantilla Sakai (borrar al terminar el desarrollo) ---
                 {
                     path: '/uikit/input',
                     name: 'input',
@@ -67,7 +113,6 @@ const router = createRouter({
                     name: 'panel',
                     component: () => import('@/views/uikit/PanelsDoc.vue')
                 },
-
                 {
                     path: '/uikit/overlay',
                     name: 'overlay',
@@ -133,19 +178,41 @@ const router = createRouter({
                 }
             ]
         },
-        {
-            path: '/landing',
-            name: 'landing',
-            component: () => import('@/views/pages/Landing.vue')
-        },
-        {
-            path: '/pages/notfound',
-            name: 'notfound',
-            component: () => import('@/views/pages/NotFound.vue')
-        },
 
-        
+        // Cualquier URL inexistente va a "no encontrado"
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: { name: 'notfound' }
+        }
     ]
+});
+
+// ========================================
+// GUARD: control de sesión y permisos
+// ========================================
+router.beforeEach((to) => {
+    const auth = useAuthStore();
+
+    // Con sesión iniciada, no volver al login
+    if (to.name === 'login' && auth.estaLogueado) {
+        return { path: '/' };
+    }
+
+    // Rutas públicas: login, acceso denegado, landing, no encontrado
+    if (to.meta.publica) return true;
+
+    // Rutas protegidas sin sesión: al login
+    const requiereSesion = to.matched.some((r) => r.meta.requiresAuth);
+    if (requiereSesion && !auth.estaLogueado) {
+        return { name: 'login', query: { redirect: to.fullPath } };
+    }
+
+    // Ruta con permiso requerido
+    if (to.meta.permiso && !auth.tienePermiso(to.meta.permiso)) {
+        return { name: 'accessDenied' };
+    }
+
+    return true;
 });
 
 export default router;

@@ -1,8 +1,32 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 import AppConfigurator from './AppConfigurator.vue';
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
+const auth = useAuthStore();
+const router = useRouter();
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+
+async function cerrarSesion() {
+    // Elimina el token también en el servidor
+    try {
+        await fetch(`${API_URL}/logout`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${auth.token}`
+            }
+        });
+    } catch (e) {
+        // Si falla la conexión, igual se cierra la sesión local
+    }
+
+    auth.logout();
+    router.push({ name: 'login' });
+}
 </script>
 
 <template>
@@ -60,17 +84,13 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-calendar"></i>
-                        <span>Calendar</span>
-                    </button>
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-inbox"></i>
-                        <span>Messages</span>
-                    </button>
-                    <button type="button" class="layout-topbar-action">
+                    <div class="layout-topbar-action cursor-default">
                         <i class="pi pi-user"></i>
-                        <span>Profile</span>
+                        <span>{{ auth.nombreUsuario }} ({{ auth.rolUsuario }})</span>
+                    </div>
+                    <button type="button" class="layout-topbar-action" @click="cerrarSesion">
+                        <i class="pi pi-sign-out"></i>
+                        <span>Cerrar sesión</span>
                     </button>
                 </div>
             </div>

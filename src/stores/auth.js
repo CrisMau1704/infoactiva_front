@@ -6,13 +6,13 @@ export const useAuthStore = defineStore('auth', {
     // ========================================
     state: () => ({
         // Usuario logueado (id, nombre, email, rol)
-        user: JSON.parse(localStorage.getItem('user') || 'null'),
+        user: JSON.parse(sessionStorage.getItem('user') || 'null'),
 
         // Token de Sanctum para autenticar peticiones
-        token: localStorage.getItem('token') || null,
+        token: sessionStorage.getItem('token') || null,
 
         // Array de permisos: ['clientes.ver', 'clientes.crear', ...]
-        permisos: JSON.parse(localStorage.getItem('permisos') || '[]'),
+        permisos: JSON.parse(sessionStorage.getItem('permisos') || '[]'),
     }),
 
     // ========================================
@@ -48,10 +48,10 @@ export const useAuthStore = defineStore('auth', {
             this.token = token;
             this.permisos = permisos;
 
-            // Persistir en localStorage (sobrevive recargas)
-            localStorage.setItem('user', JSON.stringify(user));
-            localStorage.setItem('token', token);
-            localStorage.setItem('permisos', JSON.stringify(permisos));
+            // Persistir en sessionStorage (sobrevive recargas)
+            sessionStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('token', token);
+            sessionStorage.setItem('permisos', JSON.stringify(permisos));
         },
 
         /**
@@ -62,9 +62,9 @@ export const useAuthStore = defineStore('auth', {
             this.token = null;
             this.permisos = [];
 
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
-            localStorage.removeItem('permisos');
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('permisos');
         },
 
         /**

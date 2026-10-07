@@ -10,7 +10,7 @@ const API_URL = 'http://127.0.0.1:8000/api';
  * @returns {Promise<object>} - Datos JSON de la respuesta
  */
 export async function apiRequest(endpoint, options = {}) {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     const config = {
         headers: {
@@ -31,9 +31,9 @@ export async function apiRequest(endpoint, options = {}) {
 
     // 🔴 Token expirado o inválido: limpiar y redirigir al login
     if (response.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('permisos');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('permisos');
 
         if (window.location.pathname !== '/auth/login') {
             window.location.href = '/auth/login';
