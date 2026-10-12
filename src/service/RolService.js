@@ -1,25 +1,14 @@
-// src/service/ClienteService.js
-import { apiRequest, buildQuery } from './ApiService';
+import { apiRequest } from './ApiService';
 
 export const RolService = {
-    /**
-     * Listar roles con búsqueda, paginación y ordenamiento
-     * @param {object} params - { page, por_pagina, buscar, estado, ordenar_por, direccion }
-     */
-    getRoles(params = {}) {
-        return apiRequest(`/roles${buildQuery(params)}`);
+    getRoles() {
+        return apiRequest('/roles');
     },
 
-    /**
-     * Obtener un rol por ID
-     */
     getRol(id) {
         return apiRequest(`/roles/${id}`);
     },
 
-    /**
-     * Crear un rol
-     */
     createRol(data) {
         return apiRequest('/roles', {
             method: 'POST',
@@ -27,9 +16,6 @@ export const RolService = {
         });
     },
 
-    /**
-     * Actualizar un rol
-     */
     updateRol(id, data) {
         return apiRequest(`/roles/${id}`, {
             method: 'PUT',
@@ -37,12 +23,21 @@ export const RolService = {
         });
     },
 
-    /**
-     * Eliminar un rol
-     */
     deleteRol(id) {
         return apiRequest(`/roles/${id}`, {
             method: 'DELETE',
+        });
+    },
+
+    getPermisos() {
+        return apiRequest('/permisos');
+    },
+
+    
+    syncPermisos(id, permisos) {
+        return apiRequest(`/roles/${id}/permisos`, {
+            method: 'PUT',
+            body: { permisos },
         });
     },
 };

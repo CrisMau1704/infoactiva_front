@@ -62,12 +62,7 @@ const router = createRouter({
                 },
 
                 // --- Configuración ---
-                {
-                    path: '/configuracion/regionales',
-                    name: 'regionales',
-                    component: () => import('@/views/configuracion/Regionales.vue'),
-                    meta: { permiso: 'regionales.ver' }
-                },
+                
 
                 {
                     path: '/configuracion/usuarios',
@@ -80,6 +75,24 @@ const router = createRouter({
                     name: 'roles',
                     component: () => import('@/views/configuracion/Roles.vue'),
                     meta: { permiso: 'roles.ver' }
+                },
+                {
+                    path: '/configuracion/permisos',
+                    name: 'permisos',
+                    component: () => import('@/views/configuracion/Permisos.vue'),
+                    meta: { permiso: 'permisos.ver' }
+                },
+                {
+                    path: '/configuracion/regionales',
+                    name: 'regionales',
+                    component: () => import('@/views/configuracion/Regionales.vue'),
+                    meta: { permiso: 'regionales.ver' }
+                },
+                {
+                    path: '/configuracion/almacenes',
+                    name: 'almacenes',
+                    component: () => import('@/views/configuracion/Almacenes.vue'),
+                    meta: { permiso: 'almacenes.ver' }
                 },
 
                 // --- Plantilla Sakai (borrar al terminar el desarrollo) ---

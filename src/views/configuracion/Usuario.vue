@@ -86,13 +86,10 @@ async function cargarCatalogos() {
     try {
         const response = await UsuarioService.getCatalogos();
         roles.value = response.data.roles;
+        regionales.value = response.data.regionales;
+        almacenes.value = response.data.almacenes;
     } catch (error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudieron cargar los roles',
-            life: 3000,
-        });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar roles y regionales', life: 3000 });
     }
 }
 
@@ -348,10 +345,10 @@ function getEstadoSeverity(estado) {
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="regional" class="block font-bold mb-2">Regional</label>
-                        <Select id="regional" v-model="usuario.id_regional" :options="regionales" optionLabel="nombre" optionValue="id_regional" placeholder="Sin regional" showClear :invalid="!!errorCampo('id_regional')" fluid @change="onCambioRegional" />
-                        <small v-if="errorCampo('id_regional')" class="text-red-500">{{ errorCampo('id_regional') }}</small>
-                    </div>
+    <label for="regional" class="block font-bold mb-2">Regional</label>
+    <Select id="regional" v-model="usuario.id_regional" :options="regionales" optionLabel="nombre" optionValue="id_regional" placeholder="Sin regional" showClear :invalid="!!errorCampo('id_regional')" fluid @change="onCambioRegional" />
+    <small v-if="errorCampo('id_regional')" class="text-red-500">{{ errorCampo('id_regional') }}</small>
+</div>
                     <div>
                         <label for="almacen" class="block font-bold mb-2">Almacén</label>
                         <Select id="almacen" v-model="usuario.id_almacen" :options="almacenesFiltrados" optionLabel="nombre" optionValue="id_almacen" placeholder="Sin almacén" showClear :invalid="!!errorCampo('id_almacen')" fluid />
