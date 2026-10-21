@@ -1,6 +1,14 @@
+
 <script setup>
-import { ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { computed, ref } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
+
+const auth = useAuthStore();
+
+// ============================================
+// MENÚ COMPLETO INFOACTIVA + PRIMEVUE SAKAI
+// ============================================
 
 const model = ref([
     {
@@ -9,7 +17,8 @@ const model = ref([
             {
                 label: 'Dashboard',
                 icon: 'pi pi-fw pi-home',
-                to: '/'
+                to: '/',
+                permiso: 'dashboard.ver'
             }
         ]
     },
@@ -21,31 +30,31 @@ const model = ref([
                 label: 'Stock de Cajas',
                 icon: 'pi pi-fw pi-box',
                 to: '/operaciones/stock',
-                roles: ['Administrador', 'Jefe de Almacén', 'Jefe de Administración']
+                permiso: 'stock.ver'
             },
             {
                 label: 'Salida de Cajas',
                 icon: 'pi pi-fw pi-sign-out',
                 to: '/operaciones/guias-salida',
-                roles: ['Administrador', 'Jefe de Almacén']
+                permiso: 'guias_salida.ver'
             },
             {
                 label: 'Ingreso de Cajas',
                 icon: 'pi pi-fw pi-sign-in',
                 to: '/operaciones/guias-ingreso',
-                roles: ['Administrador', 'Jefe de Almacén', 'Auxiliar de Almacén']
+                permiso: 'guias_ingreso.ver'
             },
             {
                 label: 'Cajas',
                 icon: 'pi pi-fw pi-inbox',
                 to: '/operaciones/cajas',
-                roles: ['Administrador', 'Jefe de Almacén']
+                permiso: 'cajas.ver'
             },
             {
                 label: 'Ubicaciones',
                 icon: 'pi pi-fw pi-map-marker',
                 to: '/operaciones/ubicaciones',
-                roles: ['Administrador', 'Jefe de Almacén', 'Auxiliar de Almacén']
+                permiso: 'ubicaciones.ver'
             }
         ]
     },
@@ -57,13 +66,13 @@ const model = ref([
                 label: 'Clientes',
                 icon: 'pi pi-fw pi-briefcase',
                 to: '/clientes/clientes',
-                roles: ['Administrador', 'Jefe de Almacén']
+                permiso: 'clientes.ver'
             },
             {
                 label: 'Áreas de Cliente',
                 icon: 'pi pi-fw pi-sitemap',
                 to: '/clientes/areas',
-                roles: ['Administrador', 'Jefe de Almacén']
+                permiso: 'areas.ver'
             }
         ]
     },
@@ -75,19 +84,19 @@ const model = ref([
                 label: 'Stock por Cliente',
                 icon: 'pi pi-fw pi-chart-bar',
                 to: '/reportes/stock',
-                roles: ['Administrador', 'Jefe de Almacén', 'Jefe de Administración']
+                permiso: 'reportes.stock'
             },
             {
                 label: 'Movimientos de Cajas',
                 icon: 'pi pi-fw pi-chart-line',
                 to: '/reportes/movimientos',
-                roles: ['Administrador', 'Jefe de Almacén', 'Jefe de Administración']
+                permiso: 'reportes.movimientos'
             },
             {
                 label: 'Ubicación de Cajas',
                 icon: 'pi pi-fw pi-table',
                 to: '/reportes/ubicaciones',
-                roles: ['Administrador', 'Jefe de Almacén']
+                permiso: 'reportes.ubicaciones'
             }
         ]
     },
@@ -99,35 +108,38 @@ const model = ref([
                 label: 'Usuarios',
                 icon: 'pi pi-fw pi-user',
                 to: '/configuracion/usuarios',
-                roles: ['Administrador']
+                permiso: 'usuarios.ver'
             },
             {
                 label: 'Roles',
                 icon: 'pi pi-fw pi-id-card',
                 to: '/configuracion/roles',
-                roles: ['Administrador']
+                permiso: 'roles.ver'
             },
             {
                 label: 'Permisos',
                 icon: 'pi pi-fw pi-key',
                 to: '/configuracion/permisos',
-                roles: ['Administrador']
+                permiso: 'permisos.ver'
             },
             {
                 label: 'Regionales',
                 icon: 'pi pi-fw pi-map',
                 to: '/configuracion/regionales',
-                roles: ['Administrador']
+                permiso: 'regionales.ver'
             },
             {
                 label: 'Almacenes',
                 icon: 'pi pi-fw pi-building',
                 to: '/configuracion/almacenes',
-                roles: ['Administrador']
+                permiso: 'almacenes.ver'
             }
         ]
     },
 
+    // ============================================
+    // EJEMPLOS ORIGINALES DE PRIMEVUE SAKAI
+    // ============================================
 
     {
         label: 'UI Components',
@@ -373,13 +385,66 @@ const model = ref([
         ]
     }
 ]);
+
+// ============================================
+// FILTRADO DINÁMICO DE MENÚ POR PERMISOS
+// ============================================
+
+const gruposInfoactiva = [
+    'Inicio',
+    'Operaciones',
+    'Clientes',
+    'Reportes',
+    'Configuración'
+];
+
+const menuFiltrado = computed(() => {
+    return model.value
+        .map((grupo) => {
+
+            // Ejemplos Sakai: solo para Administrador
+            if (!gruposInfoactiva.includes(grupo.label)) {
+                return auth.rolUsuario === 'Administrador'
+                    ? grupo
+                    : null;
+            }
+
+            // Módulos Infoactiva: verificar permisos
+            const itemsPermitidos = grupo.items.filter((item) => {
+                return auth.tienePermiso(item.permiso);
+            });
+
+            return {
+                ...grupo,
+                items: itemsPermitidos
+            };
+        })
+        .filter((grupo) => {
+            return grupo !== null &&
+                (
+                    !gruposInfoactiva.includes(grupo.label) ||
+                    grupo.items.length > 0
+                );
+        });
+});
 </script>
 
 <template>
     <ul class="layout-menu">
-        <template v-for="(item, i) in model" :key="item">
-            <app-menu-item v-if="!item.separator" :item="item" :index="i"></app-menu-item>
-            <li v-if="item.separator" class="menu-separator"></li>
+        <template
+            v-for="(item, i) in menuFiltrado"
+            :key="item.label"
+        >
+            <app-menu-item
+                v-if="!item.separator"
+                :item="item"
+                :index="i"
+            />
+
+            <li
+                v-if="item.separator"
+                class="menu-separator"
+            ></li>
         </template>
     </ul>
 </template>
