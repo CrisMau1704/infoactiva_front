@@ -8,7 +8,7 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
 const auth = useAuthStore();
 const router = useRouter();
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 
 async function cerrarSesion() {
     // Elimina el token también en el servidor
